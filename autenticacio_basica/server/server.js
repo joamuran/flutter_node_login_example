@@ -24,6 +24,9 @@ app.post("/login", (req, res) => {
   // Amb la deconstrucció, podem reescriure estes línies com:
   const { username, password } = req.body;
 
+  console.log(req.headers);
+  console.log(username+" "+password);
+
   // Comprovem l'usuari i la contrassenya
   if (username === USERNAME && password === PASSWORD) {
     res.status(200).json({ success: true }); // Autenticació correcta: Tornem Status 200 (OK) i el JSON {succes:true}
