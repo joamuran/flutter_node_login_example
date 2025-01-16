@@ -14,6 +14,16 @@ const app = express();
 // Incorporem el middleware per gestionar sol·licituds JSON
 app.use(express.json());
 
+/*
+// Middleware per veure totes les peticions que rebem
+app.use("*", (req, res, next) => {
+  console.log("Rebuda");
+  console.log(req.body);
+  next();
+});
+*/
+
+
 // Configurem les rutes d'autenticació
 app.use('/auth', authRoutes);
 

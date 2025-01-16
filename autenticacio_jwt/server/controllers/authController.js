@@ -23,6 +23,7 @@ export const register = async (req, res) => {
 
 // Login d'usuari
 export const login = async (req, res) => {
+  console.log("Rebuda petició post...");
   const { username, password } = req.body;
   if (!username || !password) {
     return res.status(400).send({ error: 'Nom d\'usuari i contrasenya requerits' });

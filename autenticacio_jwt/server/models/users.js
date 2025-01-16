@@ -16,6 +16,7 @@ export const registerUser = async (username, password) => {
 
 // Funció asíncrona per validar un usuari
 export const authenticateUser = async (username, password) => {
+    console.log("[Users] Autenticant usuari "+username+" "+password);
     // Busquem l'usuari een la llista
     const user = users.find(u => u.username === username);
     if (!user) return null; // Si l'usuari no existeix retornem nl
@@ -27,3 +28,5 @@ export const authenticateUser = async (username, password) => {
     return isPasswordValid ? user : null;
 };
 
+// Creem un usuari de prova
+registerUser("testuser", "testlogin");
