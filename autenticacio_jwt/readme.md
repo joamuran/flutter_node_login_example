@@ -409,35 +409,40 @@ export default router;
 Finalment, a `app.js`, integrem tot:
 
 ```javascript
-import jwt from 'jsonwebtoken';
+import express from 'express';
+import https from 'https';
+import fs from 'fs';
+import authRoutes from './routes/authRoutes.js';
 
-// Llibreria per a les variables d'entorn
-import dotenv from 'dotenv';
+// Carregar els certificats i crea un JSON anomenat credentials
+const privateKey = fs.readFileSync('./certs/server.key', 'utf8');
+const certificate = fs.readFileSync('./certs/server.cert', 'utf8');
+const credentials = { key: privateKey, cert: certificate };
 
-dotenv.config();
-const SECRET_KEY = process.env.SECRET_KEY;
+// Definim app com a una aplicació Express
+const app = express();
 
-export const authenticateToken = (req, res, next) => {
-  // Busquem el camp Authorization en la capçalera
-  const authHeader = req.header('Authorization');
+// Incorporem el middleware per gestionar sol·licituds JSON
+app.use(express.json());
 
-  // obtenim el token (component 1)
-  const token = authHeader && authHeader.split(' ')[1];
 
-  // Si no hi ha token retornem error
-  if (!token) {
-    return res.status(401).send({ error: 'Token no proporcionat' });
-  }
+// Middleware per veure totes les peticions que rebem
+// Si volem depurar les peticions que arriben, podem descomentar el següent
+/* 
+app.use("*", (req, res, next) => {
+  console.log("Rebuda");
+  console.log(req.body);
+  next();
+});
+*/
 
-  // Verifiquem el token, i extraiem l'usuari
-  try {
-    const payload = jwt.verify(token, SECRET_KEY);
-    req.user = payload;
-    // Amb next, "botem" al pròxim middleware
-    next();
-  } catch (err) {
-    res.status(403).send({ error: 'Token no vàlid' });
-  }
-};
+
+// Configurem les rutes d'autenticació
+app.use('/auth', authRoutes);
+
+// Creem el servidor HTTPS
+const httpsServer = https.createServer(credentials, app);
+httpsServer.listen(3000, () => {
+  console.log('Servidor HTTPS amb JWT en execució a https://localhost:3000');
+});
 ```
-
